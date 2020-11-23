@@ -1,19 +1,19 @@
 package training.metofficeweather;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 
 public class ConsoleApplication {
 
-    Locations locations;
-    Scanner scan;
+    private Locations locations;
+    private final Scanner scan = new Scanner(System.in);
+    private final APIReader reader = new APIReader();
 
-    public ConsoleApplication(Locations locations){
-        this.locations = locations;
-        scan = new Scanner(System.in);
-    }
+    public void runApplication() throws JsonProcessingException {
+        this.locations = reader.getLocations();
 
-    public void runApplication(){
         System.out.println("==========================");
         System.out.println("Welcome to our Weather app");
         System.out.println("==========================");
@@ -52,7 +52,6 @@ public class ConsoleApplication {
         return newCommand;
     }
 
-
     private void listLocationsStartingWith(String command){
         String searchTerm = stripCommand(command);
 
@@ -69,8 +68,7 @@ public class ConsoleApplication {
         String id = locations.getIdOfLocation(searchTerm);
         if(id.equals("")) System.out.println("Invalid location entered, please try again");
         else {
-            ForcastFetcher fetcher = new ForcastFetcher(id);
-            Forcast forcast = fetcher.getForcast();
+            Forcast forcast = reader.getForcast(id);
             forcast.printWeatherForcast();
         }
     }
