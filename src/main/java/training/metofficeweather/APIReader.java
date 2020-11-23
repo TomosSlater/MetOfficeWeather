@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 
 public class APIReader {
 
@@ -19,12 +20,17 @@ public class APIReader {
         String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=42492468-7351-44a8-a25c-b3a7c4f10599")
                 .request(MediaType.TEXT_PLAIN)
                 .get(String.class);
-        return objectMapper.readValue(inputData, Root.class).getLocations();
+        try {
+            return objectMapper.readValue(inputData, Root.class).getLocations();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private String getNextForcastTime() {
-        JsonNode nextForcastJson = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/capabilities?res=3hourly&key=0224acb8-8d90-4c16-923e-53020daded52");
-        return nextForcastJson.get("Resource").get("TimeSteps").get("TS").get(0).asText();
+    private String getNextForecastTime() {
+        JsonNode nextForecastJson = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/capabilities?res=3hourly&key=0224acb8-8d90-4c16-923e-53020daded52");
+        return nextForecastJson.get("Resource").get("TimeSteps").get("TS").get(0).asText();
     }
 
     private JsonNode getJsonFromUrl(String url) {
@@ -33,7 +39,7 @@ public class APIReader {
                 .get(String.class);
         try {
             return objectMapper.readTree(json);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
@@ -44,15 +50,15 @@ public class APIReader {
                 locationId + "?time=" + time + "&res=3hourly&key=0224acb8-8d90-4c16-923e-53020daded52";
     }
 
-    public Forcast getForcast(String locationId) {
-        String time = getNextForcastTime();
-        String forcastUrl = createLocationUrl(locationId, time);
-        JsonNode forcastJson = getJsonFromUrl(forcastUrl);
+    public Forecast getForecast(String locationId) {
+        String time = getNextForecastTime();
+        String forecastUrl = createLocationUrl(locationId, time);
+        JsonNode forecastJson = getJsonFromUrl(forecastUrl);
 
-        String location = forcastJson.get("SiteRep").get("DV").get("Location").get("name").asText();
-        JsonNode repNode = forcastJson.get("SiteRep").get("DV").get("Location").get("Period").get("Rep");
+        String location = forecastJson.get("SiteRep").get("DV").get("Location").get("name").asText();
+        JsonNode repNode = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get("Rep");
 
-        return new Forcast(repNode, location);
+        return new Forecast(repNode, location);
     }
 
 }

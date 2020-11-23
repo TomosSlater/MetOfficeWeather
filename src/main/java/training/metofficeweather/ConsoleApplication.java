@@ -32,7 +32,7 @@ public class ConsoleApplication {
         else if(command.equalsIgnoreCase("Help")) printHelp();
         else if(command.equalsIgnoreCase("List")) listLocations();
         else if (command.toLowerCase().startsWith("list ")) listLocationsStartingWith(command);
-        else if (command.toLowerCase().startsWith("forcast ")) getForcast(command);
+        else if (command.toLowerCase().startsWith("forecast ")) getForecast(command);
         else System.out.println("Invalid command entered, use 'Help' to get a list of commands");
         getUserInput();
     }
@@ -61,14 +61,14 @@ public class ConsoleApplication {
         }
     }
 
-    private void getForcast(String name){
+    private void getForecast(String name){
         String searchTerm = stripCommand(name);
 
         String id = locations.getIdOfLocation(searchTerm);
         if(id.equals("")) System.out.println("Invalid location entered, please try again");
         else {
-            Forcast forcast = reader.getForcast(id);
-            forcast.printWeatherForcast();
+            Forecast forecast = reader.getForecast(id);
+            forecast.printWeatherForecast();
         }
     }
 
@@ -77,7 +77,7 @@ public class ConsoleApplication {
         System.out.println("Help - lists all supported commands, but you already knew this");
         System.out.println("List - lists all location names");
         System.out.println("List [Word(s)] - lists all location names starting with the given words");
-        System.out.println("Forcast [Location] - gets the forcast for the given location");
+        System.out.println("Forecast [Location] - gets the forecast for the given location");
         System.out.println("Quit - quits the application");
     }
 }

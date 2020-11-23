@@ -9,7 +9,7 @@ public class Main {
             ConsoleApplication console = new ConsoleApplication();
             console.runApplication();
 
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }

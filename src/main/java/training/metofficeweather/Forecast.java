@@ -2,7 +2,7 @@ package training.metofficeweather;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class Forcast {
+public class Forecast {
     private final String location;
     private final String uvCode;
     private final String weatherCode;
@@ -47,7 +47,7 @@ public class Forcast {
             "Thunder shower (day)",
             "Thunder}"};
 
-    public Forcast(JsonNode jsonNode, String location) {
+    public Forecast(JsonNode jsonNode, String location) {
         this.location = location;
         this.uvCode = jsonNode.get("U").asText();
         this.weatherCode = jsonNode.get("W").asText();
@@ -61,8 +61,8 @@ public class Forcast {
         this.windDirection = jsonNode.get("D").asText();
     }
 
-    public void printWeatherForcast() {
-        System.out.println("The forcast for " + location + ":");
+    public void printWeatherForecast() {
+        System.out.println("The forecast for " + location + ":");
         System.out.println("Temperature: " + temperature + "°C (feels like: " + feelsLike + "°C)");
         System.out.println("Weather: " + getWeather());
         System.out.println("Visibility: " + getVisibility());
@@ -70,6 +70,19 @@ public class Forcast {
         System.out.println("Humidity: " + humidity + "%");
         System.out.println("Chance of precipitation: " + precipitationProbability + "%");
         System.out.println("UV strength: " + getUv());
+    }
+
+    public String getWeatherForecast(){
+        String forecast = "";
+        forecast += "The forecast for " + location + ":";
+        forecast += "<br>Temperature: " + temperature + "°C (feels like " + feelsLike + "°C)";
+        forecast += "<br>Weather: " + getWeather();
+        forecast += "<br>Visibility: " + getVisibility();
+        forecast += "<br>Wind Speed: " + windSpeed + "mph " + windDirection + " with " + gustSpeed + "mph gusts\n";
+        forecast += "<br>Humidity: " + humidity + "%";
+        forecast += "<br>Chance of precipitation: " + precipitationProbability + "%";
+        forecast += "<br>UV strength: " + getUv();
+        return forecast;
     }
 
     public String getUv() {
@@ -85,6 +98,10 @@ public class Forcast {
         } else {
             return "Extreme. Avoid being outside during midday hours. Shirt, sunscreen and hat are essential.";
         }
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public String getWeather() {
@@ -116,5 +133,33 @@ public class Forcast {
             default:
                 return visibilityCode;
         }
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public String getWindSpeed() {
+        return windSpeed;
+    }
+
+    public String getGustSpeed() {
+        return gustSpeed;
+    }
+
+    public String getFeelsLike() {
+        return feelsLike;
+    }
+
+    public String getWindDirection() {
+        return windDirection;
+    }
+
+    public String getHumidity() {
+        return humidity;
+    }
+
+    public String getPrecipitationProbability() {
+        return precipitationProbability;
     }
 }
