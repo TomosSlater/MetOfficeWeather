@@ -17,9 +17,16 @@ public class Locations {
     public List<Location> searchLocationsByName(String name){
         List<Location> matchedLocations = new ArrayList<>();
         for(Location location: locations){
-            if(location.getName().startsWith(name)) matchedLocations.add(location);
+            if(location.getName().toLowerCase().startsWith(name.toLowerCase())) matchedLocations.add(location);
         }
         return matchedLocations;
+    }
+
+    public String getIdOfLocation(String name){
+        for(Location location: locations){
+            if (location.getName().equalsIgnoreCase(name)) return location.getId();
+        }
+        return "";
     }
 
 }

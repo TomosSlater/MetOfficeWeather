@@ -29,10 +29,12 @@ public class ConsoleApplication {
     }
 
     private void executeCommand(String command){
-        if (command.equals("Quit")) System.exit(0);
-        else if(command.equals("Help")) printHelp();
-        else if(command.equals("List")) listLocations();
-        else if (command.startsWith("List ")) listLocationsStartingWith(command);
+        if (command.equalsIgnoreCase("Quit")) System.exit(0);
+        else if(command.equalsIgnoreCase("Help")) printHelp();
+        else if(command.equalsIgnoreCase("List")) listLocations();
+        else if (command.toLowerCase().startsWith("list ")) listLocationsStartingWith(command);
+        else if (command.toLowerCase().startsWith("forcast ")) getForcast(command);
+        else System.out.println("Invalid command entered, use 'Help' to get a list of commands");
         getUserInput();
     }
 
@@ -40,13 +42,19 @@ public class ConsoleApplication {
         for(Location location: locations.getLocations()) System.out.println(location.getName());
     }
 
-    private void listLocationsStartingWith(String command){
-        String searchTerm = "";
+    private String stripCommand(String command){
+        String newCommand = "";
         String[] parts = command.split(" ");
         for(int i = 1; i < parts.length; i++){
-            if (i > 1) searchTerm += " ";
-            searchTerm += parts[i];
+            if (i > 1) newCommand += " ";
+            newCommand += parts[i];
         }
+        return newCommand;
+    }
+
+
+    private void listLocationsStartingWith(String command){
+        String searchTerm = stripCommand(command);
 
         List<Location> matchedLocations = locations.searchLocationsByName(searchTerm);
         if(matchedLocations.isEmpty()) System.out.println("No locations match input '" + searchTerm + "'");
@@ -55,11 +63,24 @@ public class ConsoleApplication {
         }
     }
 
+    private void getForcast(String name){
+        String searchTerm = stripCommand(name);
+
+        String id = locations.getIdOfLocation(searchTerm);
+        if(id.equals("")) System.out.println("Invalid location entered, please try again");
+        else {
+            ForcastFetcher fetcher = new ForcastFetcher(id);
+            Forcast forcast = fetcher.getForcast();
+            forcast.printWeatherForcast();
+        }
+    }
+
     private void printHelp(){
         System.out.println("Supported Commands: ");
         System.out.println("Help - lists all supported commands, but you already knew this");
         System.out.println("List - lists all location names");
         System.out.println("List [Word(s)] - lists all location names starting with the given words");
+        System.out.println("Forcast [Location] - gets the forcast for the given location");
         System.out.println("Quit - quits the application");
     }
 }

@@ -9,9 +9,9 @@ public class TomosTesting {
 
         try {
             Locations locations = reader.getLocations();
-            for(Location location: locations.getLocations()){
-                System.out.println(location.getName());
-            }
+            ConsoleApplication console = new ConsoleApplication(locations);
+            console.runApplication();
+
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
             e.printStackTrace();
         }
