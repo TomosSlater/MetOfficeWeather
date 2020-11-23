@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -13,18 +12,14 @@ import javax.ws.rs.core.MediaType;
 public class APIReader {
 
     @JsonProperty(value="Locations")
-    private Locations locations;
-    private String inputData;
-    private String locationId;
     private final Client client = ClientBuilder.newClient();
     private final ObjectMapper objectMapper = new ObjectMapper();;
 
     public Locations getLocations() throws JsonProcessingException {
-        inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=42492468-7351-44a8-a25c-b3a7c4f10599")
+        String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=42492468-7351-44a8-a25c-b3a7c4f10599")
                 .request(MediaType.TEXT_PLAIN)
                 .get(String.class);
-        locations = objectMapper.readValue(inputData, Root.class).getLocations();
-        return locations;
+        return objectMapper.readValue(inputData, Root.class).getLocations();
     }
 
     private String getNextForcastTime() {
