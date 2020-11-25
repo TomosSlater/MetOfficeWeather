@@ -41,23 +41,17 @@ public class APIReader {
     }
 
     public Forecast getForecast(String locationId) {
-        String time = getNextForecastTime();
-        String forecastUrl = createLocationUrl(locationId, time);
+        String forecastUrl = createLocationUrl(locationId);
         JsonNode forecastJson = getJsonFromUrl(forecastUrl);
 
         String location = forecastJson.get("SiteRep").get("DV").get("Location").get("name").asText();
-        JsonNode repNode = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get("Rep");
+        JsonNode repNode = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get(0).get("Rep").get(0);
 
         return new Forecast(repNode, location);
     }
 
-    private String createLocationUrl(String locationId, String time) {
+    private String createLocationUrl(String locationId) {
         return "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" +
-                locationId + "?time=" + time + "&res=3hourly&key=" + apiKey;
-    }
-
-    private String getNextForecastTime() {
-        JsonNode nextForecastJson = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/capabilities?res=3hourly&key=" + apiKey);
-        return nextForecastJson.get("Resource").get("TimeSteps").get("TS").get(0).asText();
+                locationId + "?res=3hourly&key=" + apiKey;
     }
 }
