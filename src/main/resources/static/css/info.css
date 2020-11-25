@@ -1,6 +1,6 @@
-#weatherSymbol {
-     float: right;
+.forecastData {
+    width: 74%;
 }
-#forecastData {
-               width: 500px;
+.forecastData img {
+    float: right;
 }

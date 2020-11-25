@@ -4,22 +4,32 @@
       layout:decorate="layout">
 
     <head>
-        <title>Weather Information</title>
+        <title>Weather Forecast</title>
         <link rel="stylesheet" th:href="@{/css/info.css}"/>
     </head>
     <body>
         <div layout:fragment="content" class="container body-content">
-            <h2>Weather Information for <span th:text="${forecast.getLocation()}"></span></h2>
-            <div id="forecastData">
-                <img id="weatherSymbol" th:src="@{${'images/' + forecast.getWeatherCode() + '.png'}}" height="130" width="130" alt="Image of the weather"/>
-                Temperature: <span th:text="${forecast.getTemperature()}"></span>°C (feels like <span th:text="${forecast.getFeelsLike()}"></span>°C) <br/>
-                Weather: <span th:text=${forecast.getWeather()}></span> <br/>
-                Visibility: <span th:text="${forecast.getVisibility()}"></span> <br/>
-                Wind speed: <span th:text="${forecast.getWindSpeed()}"></span>mph <span th:text="${forecast.getWindDirection()}"></span>
-                with <span th:text="${forecast.getGustSpeed()}"></span>mph gusts <br/>
-                Humidity: <span th:text="${forecast.getHumidity()}"></span>% <br/>
-                Chance of precipitation: <span th:text="${forecast.getPrecipitationProbability()}"></span>% <br/>
-                UV strength:  <span th:text="${forecast.getUv()}"></span>
+            <h2>Weather Forecast for <span th:text="${forecast.getLocation()}"></span>
+                (<span th:text="${forecast.getTime()}"></span>)</h2>
+            <div class="forecastData">
+                <p>
+                    <img th:src="@{${'images/' + forecast.getWeatherCode() + '.png'}}"
+                         width="216" height="216" alt="Image of the weather"/>
+                    Temperature: <span th:text="${forecast.getTemperature()}"></span>°C (feels like
+                    <span th:text="${forecast.getFeelsLike()}"></span>°C) <br/>
+                    Weather: <span th:text=${forecast.getWeather()}></span> <br/>
+                    Visibility: <span th:text="${forecast.getVisibility()}"></span> <br/>
+                    Wind speed: <span th:text="${forecast.getWindSpeed()}"></span>mph
+                    <span th:text="${forecast.getWindDirection()}"></span>
+                    with <span th:text="${forecast.getGustSpeed()}"></span>mph gusts <br/>
+                    Humidity: <span th:text="${forecast.getHumidity()}"></span>% <br/>
+                    Chance of precipitation: <span th:text="${forecast.getPrecipitationProbability()}"></span>% <br/>
+                    UV strength:  <span th:text="${forecast.getUv()}"></span> <br/>
+                    Average chance of rain today: <span th:text="${forecast.getAvgRainChanceNextDay()}"></span>% <br/>
+                    Maximum of <span th:text="${forecast.getHighestRainChanceNextDay()}"></span>% chance of rain at
+                    today (at <span th:text="${forecast.getHighestRainChanceTime()}"></span>).
+                    <span th:text="${forecast.getUmbrellaMessage()}"></span>
+                <p/>
             </div>
         </div>
     </body>
