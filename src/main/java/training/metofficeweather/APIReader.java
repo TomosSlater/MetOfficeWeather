@@ -13,6 +13,8 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class APIReader {
 
@@ -20,6 +22,7 @@ public class APIReader {
     private final Client client = ClientBuilder.newClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String apiKey = System.getenv("MET_KEY");
+    private int forecastsPerDay = 1;
 
     public Locations getLocations() {
         String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=" + apiKey)
@@ -46,14 +49,44 @@ public class APIReader {
     }
 
     public Forecast getForecast(String locationId) {
+        Forecast forecast = getForecast(locationId, 0);
+
+
+        int highestRainChance = 0;
+        int avgRainChance = 0;
+        List<Integer> forecastsForNextDay = getPrecipitaionChanceForNextDay(locationId);
+        for(Integer chance: forecastsForNextDay){
+            avgRainChance += chance;
+            highestRainChance = (chance > highestRainChance) ? chance: highestRainChance;
+        }
+        avgRainChance = Math.round((float)avgRainChance / (float)forecastsPerDay);
+
+        forecast.setAvgRainChanceNextDay(avgRainChance);
+        forecast.setHighestRainChanceNextDay(highestRainChance);
+
+        return forecast;
+    }
+
+    private Forecast getForecast(String locationId, int index){
         String forecastUrl = createLocationUrl(locationId);
         JsonNode forecastJson = getJsonFromUrl(forecastUrl);
 
         String location = forecastJson.get("SiteRep").get("DV").get("Location").get("name").asText();
-        JsonNode repNode = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get(0).get("Rep").get(0);
+        JsonNode repNode = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get(0).get("Rep").get(index);
 
+        forecastsPerDay = forecastJson.get("SiteRep").get("DV").get("Location").get("Period").get(0).get("Rep").size();
         return new Forecast(repNode, location);
     }
+
+
+    private List<Integer> getPrecipitaionChanceForNextDay(String locationId){
+        List<Integer> precipitationChances = new ArrayList<>();
+        for(int i = 0; i < forecastsPerDay; i++)
+            precipitationChances.add(Integer.parseInt(getForecast(locationId, i).getPrecipitationProbability()));
+
+        return precipitationChances;
+    }
+
 
     private String createLocationUrl(String locationId) {
         return "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" +

@@ -48,6 +48,8 @@ public class Forecast {
             "Thunder shower (night)",
             "Thunder shower (day)",
             "Thunder}"};
+    private int avgRainChanceNextDay;
+    private int highestRainChanceNextDay;
 
     public Forecast(JsonNode jsonNode, String location) {
         this.location = location;
@@ -118,5 +120,13 @@ public class Forecast {
             default:
                 return visibilityCode;
         }
+    }
+
+    public void setAvgRainChanceNextDay(int chance){
+        avgRainChanceNextDay = chance;
+    }
+
+    public void setHighestRainChanceNextDay(int chance){
+        highestRainChanceNextDay = chance;
     }
 }
