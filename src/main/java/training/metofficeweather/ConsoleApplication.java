@@ -1,5 +1,4 @@
 package training.metofficeweather;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.Scanner;
 import java.util.List;
@@ -10,7 +9,7 @@ public class ConsoleApplication {
     private final Scanner scan = new Scanner(System.in);
     private final APIReader reader = new APIReader();
 
-    public void runApplication() throws JsonProcessingException {
+    public void runApplication() {
         this.locations = reader.getLocations();
 
         System.out.println("==========================");
@@ -21,58 +20,58 @@ public class ConsoleApplication {
         getUserInput();
     }
 
-    private void getUserInput(){
+    private void getUserInput() {
         System.out.print("\nEnter command: >");
         String input = scan.nextLine();
         executeCommand(input);
     }
 
-    private void executeCommand(String command){
+    private void executeCommand(String command) {
         if (command.equalsIgnoreCase("Quit")) System.exit(0);
-        else if(command.equalsIgnoreCase("Help")) printHelp();
-        else if(command.equalsIgnoreCase("List")) listLocations();
+        else if (command.equalsIgnoreCase("Help")) printHelp();
+        else if (command.equalsIgnoreCase("List")) listLocations();
         else if (command.toLowerCase().startsWith("list ")) listLocationsStartingWith(command);
         else if (command.toLowerCase().startsWith("forecast ")) getForecast(command);
         else System.out.println("Invalid command entered, use 'Help' to get a list of commands");
         getUserInput();
     }
 
-    private void listLocations(){
-        for(Location location: locations.getLocations()) System.out.println(location.getName());
+    private void listLocations() {
+        for (Location location : locations.getLocations()) System.out.println(location.getName());
     }
 
-    private String stripCommand(String command){
+    private String stripCommand(String command) {
         String newCommand = "";
         String[] parts = command.split(" ");
-        for(int i = 1; i < parts.length; i++){
+        for (int i = 1; i < parts.length; i++) {
             if (i > 1) newCommand += " ";
             newCommand += parts[i];
         }
         return newCommand;
     }
 
-    private void listLocationsStartingWith(String command){
+    private void listLocationsStartingWith(String command) {
         String searchTerm = stripCommand(command);
 
         List<Location> matchedLocations = locations.searchLocationsByName(searchTerm);
-        if(matchedLocations.isEmpty()) System.out.println("No locations match input '" + searchTerm + "'");
+        if (matchedLocations.isEmpty()) System.out.println("No locations match input '" + searchTerm + "'");
         else {
-            for(Location location: matchedLocations) System.out.println(location.getName());
+            for (Location location : matchedLocations) System.out.println(location.getName());
         }
     }
 
-    private void getForecast(String name){
+    private void getForecast(String name) {
         String searchTerm = stripCommand(name);
 
         String id = locations.getIdOfLocation(searchTerm);
-        if(id.equals("")) System.out.println("Invalid location entered, please try again");
+        if (id.equals("")) System.out.println("Invalid location entered, please try again");
         else {
             Forecast forecast = reader.getForecast(id);
             forecast.printWeatherForecast();
         }
     }
 
-    private void printHelp(){
+    private void printHelp() {
         System.out.println("Supported Commands: ");
         System.out.println("Help - lists all supported commands, but you already knew this");
         System.out.println("List - lists all location names");

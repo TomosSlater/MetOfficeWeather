@@ -1,6 +1,5 @@
 package training.metofficeweather.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ public class Website {
     }
 
     @RequestMapping("/weatherInfo")
-    ModelAndView weatherInfo(@RequestParam("location") String location) throws JsonProcessingException {
+    ModelAndView weatherInfo(@RequestParam("location") String location) {
 
         Locations locations = reader.getLocations();
         String id = locations.getIdOfLocation(location);
@@ -32,7 +31,7 @@ public class Website {
         return new ModelAndView("info", "forecast", forecast) ;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(Website.class, args);
     }
 

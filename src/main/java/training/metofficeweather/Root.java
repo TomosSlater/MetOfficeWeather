@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Root {
 
-    @JsonProperty(value="Locations")
+    @JsonProperty(value = "Locations")
     private Locations locations;
 
-    public Locations getLocations(){
+    public Locations getLocations() {
         return locations;
     }
 }

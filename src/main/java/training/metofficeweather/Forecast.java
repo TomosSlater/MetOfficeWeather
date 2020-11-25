@@ -1,7 +1,9 @@
 package training.metofficeweather;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.Getter;
 
+@Getter
 public class Forecast {
     private final String location;
     private final String uvCode;
@@ -72,19 +74,6 @@ public class Forecast {
         System.out.println("UV strength: " + getUv());
     }
 
-    public String getWeatherForecast(){
-        String forecast = "";
-        forecast += "The forecast for " + location + ":";
-        forecast += "<br>Temperature: " + temperature + "°C (feels like " + feelsLike + "°C)";
-        forecast += "<br>Weather: " + getWeather();
-        forecast += "<br>Visibility: " + getVisibility();
-        forecast += "<br>Wind Speed: " + windSpeed + "mph " + windDirection + " with " + gustSpeed + "mph gusts\n";
-        forecast += "<br>Humidity: " + humidity + "%";
-        forecast += "<br>Chance of precipitation: " + precipitationProbability + "%";
-        forecast += "<br>UV strength: " + getUv();
-        return forecast;
-    }
-
     public String getUv() {
         int uvNo = Integer.parseInt(uvCode);
         if (uvNo < 3) {
@@ -100,14 +89,10 @@ public class Forecast {
         }
     }
 
-    public String getLocation() {
-        return location;
-    }
-
     public String getWeather() {
-        if(weatherCode.matches("[0-9]+")){
+        if (weatherCode.matches("[0-9]+")) {
             int weatherInt = Integer.parseInt(weatherCode);
-            if(weatherInt<30){
+            if (weatherInt < 30) {
                 return weatherCodes[weatherInt];
             }
         }
@@ -133,33 +118,5 @@ public class Forecast {
             default:
                 return visibilityCode;
         }
-    }
-
-    public String getTemperature() {
-        return temperature;
-    }
-
-    public String getWindSpeed() {
-        return windSpeed;
-    }
-
-    public String getGustSpeed() {
-        return gustSpeed;
-    }
-
-    public String getFeelsLike() {
-        return feelsLike;
-    }
-
-    public String getWindDirection() {
-        return windDirection;
-    }
-
-    public String getHumidity() {
-        return humidity;
-    }
-
-    public String getPrecipitationProbability() {
-        return precipitationProbability;
     }
 }
