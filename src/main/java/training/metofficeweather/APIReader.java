@@ -14,7 +14,7 @@ public class APIReader {
     @JsonProperty(value = "Locations")
     private final Client client = ClientBuilder.newClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String apiKey = "42492468-7351-44a8-a25c-b3a7c4f10599";
+    private final String apiKey = System.getenv("MET_KEY");
 
     public Locations getLocations() {
         String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=" + apiKey)
