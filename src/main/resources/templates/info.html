@@ -5,11 +5,12 @@
 
     <head>
         <title>Weather Information</title>
+        <link rel="stylesheet" th:href="@{/css/info.css}"/>
     </head>
     <body>
         <div layout:fragment="content" class="container body-content">
             <h2>Weather Information for <span th:text="${forecast.getLocation()}"></span></h2>
-            <div>
+            <div id="forecastData">
                 <p>Temperature: <span th:text="${forecast.getTemperature()}"></span>°C (feels like <span th:text="${forecast.getFeelsLike()}"></span>°C)</p>
                 <p>Weather: <span th:text=${forecast.getWeather()}></span></p>
                 <p>Visibility: <span th:text="${forecast.getVisibility()}"></span></p>
@@ -18,6 +19,7 @@
                 <p>Chance of precipitation: <span th:text="${forecast.getPrecipitationProbability()}"></span>%</p>
                 <p>UV strength:  <span th:text="${forecast.getUv()}"></span></p>
             </div>
+            <img th:src="@{${'images/' + forecast.getWeatherCode() + '.png'}}" height="200" width="200"/>
         </div>
     </body>
 </html>
