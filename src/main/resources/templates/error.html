@@ -5,10 +5,11 @@
 
 <head>
     <title>Error</title>
+    <script type="text/javascript" th:src="@{/js/error.js}" defer></script>
 </head>
 <body>
 <div layout:fragment="content" class="container body-content">
-    <h2>Error: could not find entered location</h2>
+    <h2 id="errorMessage"></h2>
 </div>
 </body>
 </html>
