@@ -26,7 +26,7 @@ public class Website {
     ModelAndView home() throws JsonProcessingException {
         Locations inputData = reader.getLocations();
         List<String> locations = new ArrayList<>();
-        for(Location location: inputData.getLocations()) locations.add(location.getName());
+        for (Location location : inputData.getLocations()) locations.add(location.getName());
         Collections.sort(locations);
 
         return new ModelAndView("index", "locations", locations);
@@ -38,13 +38,18 @@ public class Website {
         Locations locations = reader.getLocations();
         String id = locations.getIdOfLocation(location);
         Forecast forecast = reader.getForecast(id);
-        reader.saveForecastImage();
 
-        return new ModelAndView("info", "forecast", forecast) ;
+        return new ModelAndView("info", "forecast", forecast);
+    }
+
+    @RequestMapping("/overlayInfo")
+    ModelAndView weatherInfo() {
+        reader.saveAllOverlays();
+
+        return new ModelAndView("overlays");
     }
 
     public static void main(String[] args) {
         SpringApplication.run(Website.class, args);
     }
-
 }

@@ -1,24 +1,6 @@
- #weatherSymbol {
-      float: right;
- }
-
- #forecastData {
-                width: 500px;
- }
-
- #parent {
-          position: relative;
-          top: 0;
-          left: 0;
- }
- #underlay {
-            position: relative;
-            top: 0;
-            left: 0;
- }
- #overlay {
-           position: absolute;
-           top: 0;
-           left: 0;
-           opacity: 0.4;
- }
+#weatherSymbol {
+     float: right;
+}
+#forecastData {
+               width: 500px;
+}

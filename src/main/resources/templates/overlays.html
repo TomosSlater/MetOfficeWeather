@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
+
+<head>
+    <title>Map Overlays</title>
+    <link rel="stylesheet" th:href="@{/css/overlays.css}"/>
+    <script type="text/javascript" th:src="@{/js/overlays.js}" defer></script>
+</head>
+    <body>
+        <div layout:fragment="content" class="container body-content">
+            <h2>Map Overlays</h2>
+            <div id="parent">
+                <img id="underlay" th:src="@{images/underlay.png}" alt="Map of the UK"/>
+                <img class="overlay" id="rain" th:src="@{images/Precipitation_Rate.png}" alt="Rainfall overlay"/>
+                <img class="overlay" id="cloud" th:src="@{images/Total_Cloud_Cover.png}" alt="Cloud cover overlay"/>
+                <img class="overlay" id="cloudrain" th:src="@{images/Total_Cloud_Cover_Precip_Rate_Overlaid.png}" alt="Cloud cover and rainfall overlay"/>
+                <img class="overlay" id="temperature" th:src="@{images/Temperature.png}" alt="Temperature overlay"/>
+                <img class="overlay" id="pressure" th:src="@{images/Atlantic.png}" alt="Pressure overlay"/>
+            </div>
+            <select id="overlaySelector" name="overlayType">
+                <option value="rain">Rainfall</option>
+                <option value="cloud">Total Cloud Cover</option>
+                <option value="cloudrain">Cloud and Rain</option>
+                <option value="temperature">Temperature</option>
+                <option value="pressure">Pressure</option>
+            </select>
+        </div>
+    </body>
+</html>

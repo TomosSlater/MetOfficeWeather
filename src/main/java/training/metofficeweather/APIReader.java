@@ -60,22 +60,20 @@ public class APIReader {
                 locationId + "?res=3hourly&key=" + apiKey;
     }
 
-    public String getRainfallOverlayUrl() {
+    public void saveAllOverlays() {
         JsonNode layersCapabilities = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/all/json/capabilities?key=" + apiKey);
-        JsonNode timestepsNode = layersCapabilities.get("Layers").get("Layer").get(0).get("Service").get("Timesteps");
-        String timestep = timestepsNode.get("Timestep").get(0).asText();
-        String time = timestepsNode.get("@defaultTime").asText();
-        return "http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/Precipitation_Rate/png?RUN=" + time + "Z&FORECAST=" + timestep + "&key=" + apiKey;
-    }
-
-    public void saveForecastImage() {
-        try {
-            URL url = new URL(getRainfallOverlayUrl());
-            Image image = ImageIO.read(url);
-            File outputFile = new File("src/main/resources/static/images/overlay.png");
-            ImageIO.write((RenderedImage) image, "png", outputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (JsonNode layer : layersCapabilities.get("Layers").get("Layer")) {
+            String layerName = layer.get("Service").get("LayerName").asText();
+            String time = layer.get("Service").get("Timesteps").get("@defaultTime").asText();
+            String timestep = layer.get("Service").get("Timesteps").get("Timestep").get(0).asText();
+            try {
+                URL url = new URL("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/" + layerName + "/png?RUN=" + time + "Z&FORECAST=" + timestep + "&key=" + apiKey);
+                Image image = ImageIO.read(url);
+                File outputFile = new File("src/main/resources/static/images/" + layerName + ".png");
+                ImageIO.write((RenderedImage) image, "png", outputFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

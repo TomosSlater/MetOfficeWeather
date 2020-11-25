@@ -1,0 +1,20 @@
+#parent {
+         position: relative;
+         top: 0;
+         left: 0;
+}
+#underlay {
+           position: relative;
+           top: 0;
+           left: 0;
+}
+.overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          opacity: 0.4;
+          display: none;
+}
+#rain {
+       display : block;
+}

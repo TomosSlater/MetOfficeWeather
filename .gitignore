@@ -38,3 +38,13 @@ target/
 logs/
 
 dependency-reduced-pom.xml
+
+src/main/resources/static/images/Atlantic.png
+
+src/main/resources/static/images/Precipitation_Rate.png
+
+src/main/resources/static/images/Temperature.png
+
+src/main/resources/static/images/Total_Cloud_Cover_Precip_Rate_Overlaid.png
+
+src/main/resources/static/images/Total_Cloud_Cover.png
