@@ -38,6 +38,7 @@ public class Website {
         Locations locations = reader.getLocations();
         String id = locations.getIdOfLocation(location);
         Forecast forecast = reader.getForecast(id);
+        reader.saveForecastImage();
 
         return new ModelAndView("info", "forecast", forecast) ;
     }

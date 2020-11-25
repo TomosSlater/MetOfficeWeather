@@ -4,10 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
+import java.awt.*;
+import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class APIReader {
 
@@ -53,5 +58,26 @@ public class APIReader {
     private String createLocationUrl(String locationId) {
         return "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" +
                 locationId + "?res=3hourly&key=" + apiKey;
+    }
+
+    public String getRainfallOverlayUrl() {
+        JsonNode layersCapabilities = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/all/json/capabilities?key=" + apiKey);
+        JsonNode timestepsNode = layersCapabilities.get("Layers").get("Layer").get(0).get("Service").get("Timesteps");
+        String timestep = timestepsNode.get("Timestep").get(0).asText();
+        String time = timestepsNode.get("@defaultTime").asText();
+        return "http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/Precipitation_Rate/png?RUN=" + time + "Z&FORECAST=" + timestep + "&key=" + apiKey;
+    }
+
+    public void saveForecastImage() {
+        try {
+            String urlString = getRainfallOverlayUrl();
+            System.out.println(urlString);
+            URL url = new URL(urlString);
+            Image image = ImageIO.read(url);
+            File outputfile = new File("src/main/resources/static/images/overlay.png");
+            ImageIO.write((RenderedImage) image, "png", outputfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
