@@ -3,6 +3,8 @@ package training.metofficeweather;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
+import java.time.LocalTime;
+
 @Getter
 public class Forecast {
     private final String location;
@@ -16,6 +18,10 @@ public class Forecast {
     private final String gustSpeed;
     private final String feelsLike;
     private final String windDirection;
+    private final LocalTime time;
+    private int avgRainChanceNextDay;
+    private int highestRainChanceNextDay;
+    private LocalTime highestRainChanceTime;
     private static final String[] weatherCodes = {
             "Clear night",
             "Sunny day",
@@ -48,8 +54,6 @@ public class Forecast {
             "Thunder shower (night)",
             "Thunder shower (day)",
             "Thunder}"};
-    private int avgRainChanceNextDay;
-    private int highestRainChanceNextDay;
 
     public Forecast(JsonNode jsonNode, String location) {
         this.location = location;
@@ -63,6 +67,8 @@ public class Forecast {
         this.gustSpeed = jsonNode.get("G").asText();
         this.feelsLike = jsonNode.get("F").asText();
         this.windDirection = jsonNode.get("D").asText();
+        int minutesPastMidnight = Integer.parseInt(jsonNode.get("$").asText());
+        this.time = LocalTime.of(Math.floorDiv(minutesPastMidnight, 60), minutesPastMidnight % 60);
     }
 
     public void printWeatherForecast() {
@@ -79,15 +85,15 @@ public class Forecast {
     public String getUv() {
         int uvNo = Integer.parseInt(uvCode);
         if (uvNo < 3) {
-            return "Low. No protection required. You can safely stay outside.";
+            return "Low. No protection required. You can safely stay outside";
         } else if (uvNo < 6) {
-            return "Moderate. Seek shade during midday hours, cover up and wear sunscreen.";
+            return "Moderate. Seek shade during midday hours, cover up and wear sunscreen";
         } else if (uvNo < 8) {
-            return "High. Seek shade during midday hours, cover up and wear sunscreen.";
+            return "High. Seek shade during midday hours, cover up and wear sunscreen";
         } else if (uvNo < 11) {
-            return "Very high. Avoid being outside during midday hours. Shirt, sunscreen and hat are essential.";
+            return "Very high. Avoid being outside during midday hours. Shirt, sunscreen and hat are essential";
         } else {
-            return "Extreme. Avoid being outside during midday hours. Shirt, sunscreen and hat are essential.";
+            return "Extreme. Avoid being outside during midday hours. Shirt, sunscreen and hat are essential";
         }
     }
 
@@ -122,11 +128,24 @@ public class Forecast {
         }
     }
 
-    public void setAvgRainChanceNextDay(int chance){
+    public String getUmbrellaMessage() {
+        if (highestRainChanceNextDay < 20) {
+            return "An umbrella is unnecessary";
+        } else if (highestRainChanceNextDay < 70) {
+            return "An umbrella would be a sensible accessory today";
+        }
+        return "Take an umbrella or get wet";
+    }
+
+    public void setAvgRainChanceNextDay(int chance) {
         avgRainChanceNextDay = chance;
     }
 
-    public void setHighestRainChanceNextDay(int chance){
+    public void setHighestRainChanceNextDay(int chance) {
         highestRainChanceNextDay = chance;
+    }
+
+    public void setHighestRainChanceTime(LocalTime highestRainChanceTime) {
+        this.highestRainChanceTime = highestRainChanceTime;
     }
 }

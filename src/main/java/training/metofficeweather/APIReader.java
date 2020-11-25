@@ -13,6 +13,7 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class APIReader {
     private int forecastsPerDay = 1;
 
     public Locations getLocations() {
-        String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key=" + apiKey)
+        String inputData = client.target("http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/sitelist?key="
+                + apiKey)
                 .request(MediaType.TEXT_PLAIN)
                 .get(String.class);
         try {
@@ -49,26 +51,38 @@ public class APIReader {
     }
 
     public Forecast getForecast(String locationId) {
-        Forecast forecast = getForecast(locationId, 0);
+        List<Forecast> forecastsToday = getForecastsForToday(locationId);
+        LocalTime now = LocalTime.now();
 
+        List<Forecast> futureForecasts = new ArrayList<>();
+        for (Forecast forecast : forecastsToday) {
+            if (forecast.getTime().compareTo(now) >= 0) {
+                futureForecasts.add(forecast);
+            }
+        }
+        Forecast nextForecast = futureForecasts.get(0);
 
         int highestRainChance = 0;
         int avgRainChance = 0;
-        List<Integer> forecastsForNextDay = getPrecipitaionChanceForNextDay(locationId);
-        for(Integer chance: forecastsForNextDay){
-            avgRainChance += chance;
-            highestRainChance = (chance > highestRainChance) ? chance: highestRainChance;
+        LocalTime highestRainChanceTime = nextForecast.getTime();
+        for (Forecast forecast : futureForecasts) {
+            int chanceOfRain = Integer.parseInt(forecast.getPrecipitationProbability());
+            avgRainChance += chanceOfRain;
+            highestRainChance = Math.max(chanceOfRain, highestRainChance);
+            highestRainChanceTime = (chanceOfRain > highestRainChance) ? forecast.getTime() : highestRainChanceTime;
         }
-        avgRainChance = Math.round((float)avgRainChance / (float)forecastsPerDay);
+        avgRainChance = Math.round((float) avgRainChance / (float) forecastsPerDay);
 
-        forecast.setAvgRainChanceNextDay(avgRainChance);
-        forecast.setHighestRainChanceNextDay(highestRainChance);
+        nextForecast.setAvgRainChanceNextDay(avgRainChance);
+        nextForecast.setHighestRainChanceNextDay(highestRainChance);
+        nextForecast.setHighestRainChanceTime(highestRainChanceTime);
 
-        return forecast;
+        return nextForecast;
     }
 
-    private Forecast getForecast(String locationId, int index){
-        String forecastUrl = createLocationUrl(locationId);
+    private Forecast getForecast(String locationId, int index) {
+        String forecastUrl = "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" +
+                locationId + "?res=3hourly&key=" + apiKey;
         JsonNode forecastJson = getJsonFromUrl(forecastUrl);
 
         String location = forecastJson.get("SiteRep").get("DV").get("Location").get("name").asText();
@@ -78,29 +92,24 @@ public class APIReader {
         return new Forecast(repNode, location);
     }
 
+    private List<Forecast> getForecastsForToday(String locationId) {
+        List<Forecast> nextDayForecasts = new ArrayList<>();
+        for (int i = 0; i < forecastsPerDay; i++)
+            nextDayForecasts.add(getForecast(locationId, i));
 
-    private List<Integer> getPrecipitaionChanceForNextDay(String locationId){
-        List<Integer> precipitationChances = new ArrayList<>();
-        for(int i = 0; i < forecastsPerDay; i++)
-            precipitationChances.add(Integer.parseInt(getForecast(locationId, i).getPrecipitationProbability()));
-
-        return precipitationChances;
-    }
-
-
-    private String createLocationUrl(String locationId) {
-        return "http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/" +
-                locationId + "?res=3hourly&key=" + apiKey;
+        return nextDayForecasts;
     }
 
     public void saveAllOverlays() {
-        JsonNode layersCapabilities = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/all/json/capabilities?key=" + apiKey);
+        JsonNode layersCapabilities = getJsonFromUrl("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/all/json/capabilities?key="
+                + apiKey);
         for (JsonNode layer : layersCapabilities.get("Layers").get("Layer")) {
             String layerName = layer.get("Service").get("LayerName").asText();
             String time = layer.get("Service").get("Timesteps").get("@defaultTime").asText();
             String timestep = layer.get("Service").get("Timesteps").get("Timestep").get(0).asText();
             try {
-                URL url = new URL("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/" + layerName + "/png?RUN=" + time + "Z&FORECAST=" + timestep + "&key=" + apiKey);
+                URL url = new URL("http://datapoint.metoffice.gov.uk/public/data/layer/wxfcs/" + layerName +
+                        "/png?RUN=" + time + "Z&FORECAST=" + timestep + "&key=" + apiKey);
                 Image image = ImageIO.read(url);
                 File outputFile = new File("src/main/resources/static/images/" + layerName + ".png");
                 ImageIO.write((RenderedImage) image, "png", outputFile);
