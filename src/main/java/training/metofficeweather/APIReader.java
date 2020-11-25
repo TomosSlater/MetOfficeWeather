@@ -70,12 +70,10 @@ public class APIReader {
 
     public void saveForecastImage() {
         try {
-            String urlString = getRainfallOverlayUrl();
-            System.out.println(urlString);
-            URL url = new URL(urlString);
+            URL url = new URL(getRainfallOverlayUrl());
             Image image = ImageIO.read(url);
-            File outputfile = new File("src/main/resources/static/images/overlay.png");
-            ImageIO.write((RenderedImage) image, "png", outputfile);
+            File outputFile = new File("src/main/resources/static/images/overlay.png");
+            ImageIO.write((RenderedImage) image, "png", outputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

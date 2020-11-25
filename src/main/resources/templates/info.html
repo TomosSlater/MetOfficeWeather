@@ -21,7 +21,7 @@
                 Chance of precipitation: <span th:text="${forecast.getPrecipitationProbability()}"></span>% <br/>
                 UV strength:  <span th:text="${forecast.getUv()}"></span>
             </div>
-            <div>
+            <div id="parent">
                 <img id="underlay" th:src="@{images/underlay.png}" height="500" width="500" alt="Map of the UK"/>
                 <img id="overlay" th:src="@{images/overlay.png}" height="500" width="500" alt="Overlay rainfall"/>
             </div>
