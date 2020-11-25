@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import training.metofficeweather.APIReader;
 import training.metofficeweather.Forecast;
+import training.metofficeweather.Location;
 import training.metofficeweather.Locations;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 @Controller
 @EnableAutoConfiguration
@@ -18,8 +23,13 @@ public class Website {
     private final APIReader reader = new APIReader();
 
     @RequestMapping("/")
-    ModelAndView home() {
-        return new ModelAndView("index");
+    ModelAndView home() throws JsonProcessingException {
+        Locations inputData = reader.getLocations();
+        List<String> locations = new ArrayList<>();
+        for(Location location: inputData.getLocations()) locations.add(location.getName());
+        Collections.sort(locations);
+
+        return new ModelAndView("index", "locations", locations);
     }
 
     @RequestMapping("/weatherInfo")
