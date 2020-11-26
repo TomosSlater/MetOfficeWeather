@@ -19,8 +19,8 @@ public class Forecast {
     private final String feelsLike;
     private final String windDirection;
     private final LocalTime time;
-    private int avgRainChanceNextDay;
-    private int highestRainChanceNextDay;
+    private int avgRainChanceToday;
+    private int highestRainChanceToday;
     private LocalTime highestRainChanceTime;
     private static final String[] weatherCodes = {
             "Clear night",
@@ -80,6 +80,9 @@ public class Forecast {
         System.out.println("Humidity: " + humidity + "%");
         System.out.println("Chance of precipitation: " + precipitationProbability + "%");
         System.out.println("UV strength: " + getUv());
+        System.out.println("Average chance of rain today: " + getAvgRainChanceToday() + "%");
+        System.out.println("Maximum of " + getHighestRainChanceToday() + "% chance of rain today (at " + getHighestRainChanceTime() + ")");
+        System.out.println(getUmbrellaMessage());
     }
 
     public String getUv() {
@@ -129,20 +132,20 @@ public class Forecast {
     }
 
     public String getUmbrellaMessage() {
-        if (highestRainChanceNextDay < 20) {
+        if (highestRainChanceToday < 20) {
             return "An umbrella is unnecessary";
-        } else if (highestRainChanceNextDay < 70) {
+        } else if (highestRainChanceToday < 70) {
             return "An umbrella would be a sensible accessory today";
         }
         return "Take an umbrella or get wet";
     }
 
-    public void setAvgRainChanceNextDay(int chance) {
-        avgRainChanceNextDay = chance;
+    public void setAvgRainChanceToday(int chance) {
+        avgRainChanceToday = chance;
     }
 
-    public void setHighestRainChanceNextDay(int chance) {
-        highestRainChanceNextDay = chance;
+    public void setHighestRainChanceToday(int chance) {
+        highestRainChanceToday = chance;
     }
 
     public void setHighestRainChanceTime(LocalTime highestRainChanceTime) {

@@ -73,8 +73,8 @@ public class APIReader {
         }
         avgRainChance = Math.round((float) avgRainChance / (float) forecastsPerDay);
 
-        nextForecast.setAvgRainChanceNextDay(avgRainChance);
-        nextForecast.setHighestRainChanceNextDay(highestRainChance);
+        nextForecast.setAvgRainChanceToday(avgRainChance);
+        nextForecast.setHighestRainChanceToday(highestRainChance);
         nextForecast.setHighestRainChanceTime(highestRainChanceTime);
 
         return nextForecast;

@@ -25,8 +25,8 @@
                     Humidity: <span th:text="${forecast.getHumidity()}"></span>% <br/>
                     Chance of precipitation: <span th:text="${forecast.getPrecipitationProbability()}"></span>% <br/>
                     UV strength:  <span th:text="${forecast.getUv()}"></span> <br/>
-                    Average chance of rain today: <span th:text="${forecast.getAvgRainChanceNextDay()}"></span>% <br/>
-                    Maximum of <span th:text="${forecast.getHighestRainChanceNextDay()}"></span>% chance of rain at
+                    Average chance of rain today: <span th:text="${forecast.getAvgRainChanceToday()}"></span>% <br/>
+                    Maximum of <span th:text="${forecast.getHighestRainChanceToday()}"></span>% chance of rain
                     today (at <span th:text="${forecast.getHighestRainChanceTime()}"></span>).
                     <span th:text="${forecast.getUmbrellaMessage()}"></span>
                 <p/>
